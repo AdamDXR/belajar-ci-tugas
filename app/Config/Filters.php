@@ -30,7 +30,10 @@ class Filters extends BaseFilters
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'auth' => \App\Filters\Auth::class,
+        'auth'          => \App\Filters\Auth::class,
+        // --- TAMBAHAN UNTUK UTS ---
+        'role'          => \App\Filters\Role::class,
+        // --------------------------
         'cors'          => Cors::class,
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,

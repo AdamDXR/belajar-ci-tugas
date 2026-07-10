@@ -75,18 +75,25 @@ Proyek ini adalah platform toko online yang dibangun menggunakan [CodeIgniter 4]
 Proyek menggunakan struktur MVC CodeIgniter 4:
 
 - app/Controllers - Logika aplikasi dan penanganan request
+  - Api/ - Controller untuk API endpoints (ProdukController.php, TransaksiController.php)
   - AuthController.php - Autentikasi pengguna
+  - BaseController.php - Controller dasar aplikasi
   - Home.php - Controller default halaman utama
   - ProdukController.php - Manajemen produk
   - TransaksiController.php - Proses transaksi
 - app/Models - Model untuk interaksi database
   - ProductModel.php - Model produk
+  - TransactionDetailModel.php - Model detail transaksi
+  - TransactionModel.php - Model transaksi
   - UserModel.php - Model pengguna
 - app/Views - Template dan komponen UI
+  - components/ - Folder berisi komponen-komponen UI
+  - produk/ - Folder berisi view manajemen produk admin (CRUD & PDF)
   - layout.php & layout_clear.php - Template dasar antarmuka
+  - v_checkout.php - Halaman checkout pesanan
+  - v_history.php - Halaman riwayat transaksi
   - v_home.php - Halaman Utama
   - v_keranjang.php - Halaman keranjang
   - v_login.php - Halaman autentikasi login
-  - produk/ - Folder berisi view manajemen produk admin (CRUD & PDF)
 - public/img - Gambar produk dan aset
 - public/NiceAdmin - Template admin

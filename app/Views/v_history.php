@@ -1,19 +1,29 @@
 <?= $this->extend('layout') ?>
 <?= $this->section('content') ?>
+
+<?php if (session()->getFlashData('success')) : ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= session()->getFlashData('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 History Transaksi Pembelian <strong><?= $username ?></strong>
 <hr>
 <div class="table-responsive">
-    <!-- Table with stripped rows -->
     <table class="table datatable">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">ID Pembelian</th>
+                <?php if (session()->get('role') == 'admin') : ?>
+                    <th scope="col">Pembeli</th>
+                <?php endif; ?>
                 <th scope="col">Waktu Pembelian</th>
                 <th scope="col">Total Bayar</th>
                 <th scope="col">Alamat</th>
                 <th scope="col">Status</th>
-                <th scope="col"></th>
+                <th scope="col">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -24,18 +34,24 @@ History Transaksi Pembelian <strong><?= $username ?></strong>
                     <tr>
                         <th scope="row"><?= $index + 1 ?></th>
                         <td><?= $item['id'] ?></td>
+                        <?php if (session()->get('role') == 'admin') : ?>
+                            <td><?= $item['username'] ?></td>
+                        <?php endif; ?>
                         <td><?= $item['created_at'] ?></td>
                         <td><?= number_to_currency($item['total_harga'], 'IDR') ?></td>
                         <td><?= $item['alamat'] ?></td>
                         <td>
                             <?= ($item['status'] == "1")
                                 ? '<span class="badge bg-success">Sudah Selesai</span>'
-                                : '<span class="badge bg-warning">Belum Selesai</span>' ?>
+                                : '<span class="badge bg-warning text-dark">Belum Selesai</span>' ?>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal-<?= $item['id'] ?>">
+                            <button type="button" class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#detailModal-<?= $item['id'] ?>">
                                 Detail
                             </button>
+                            <?php if (session()->get('role') == 'admin') : ?>
+                                <a href="<?= base_url('transaksi/ubah_status/' . $item['id']) ?>" class="btn btn-primary btn-sm mb-1">Ubah Status</a>
+                            <?php endif; ?>
                         </td>
                     </tr> 
             <?php
@@ -44,12 +60,10 @@ History Transaksi Pembelian <strong><?= $username ?></strong>
             ?>
         </tbody>
     </table>
-    <!-- End Table with stripped rows -->
 </div>
 
 <?php if (!empty($transactions)) : ?>
     <?php foreach ($transactions as $item) : ?>
-        <!-- Detail Modal Begin -->
         <div class="modal fade" id="detailModal-<?= $item['id'] ?>" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -64,7 +78,6 @@ History Transaksi Pembelian <strong><?= $username ?></strong>
                                 
                                 <?php
                                 $imagePath = FCPATH . 'img/' . $item2['foto'];
-
                                 if (!empty($item2['foto']) && file_exists($imagePath)) :
                                 ?>
                                     <div class="my-2">
@@ -85,7 +98,6 @@ History Transaksi Pembelian <strong><?= $username ?></strong>
                 </div>
             </div>
         </div>
-        <!-- Detail Modal End -->
     <?php endforeach; ?>
 <?php endif; ?>
 <?= $this->endSection() ?>

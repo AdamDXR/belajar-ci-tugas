@@ -11,7 +11,6 @@ if (session()->getFlashData('success')) {
 }
 ?>
 <?php echo form_open('keranjang/edit') ?> 
-<!-- Table with stripped rows -->
 <table class="table datatable">
     <thead>
         <tr>
@@ -45,10 +44,15 @@ if (session()->getFlashData('success')) {
         ?>
     </tbody>
 </table>
-<!-- End Table with stripped rows -->
 
 <div class="alert alert-info">
-    <?php echo "Total = " . number_to_currency($total, 'IDR') ?>
+    <?php
+    $diskon = session()->get('diskon') ?? 0;
+    if ($diskon > 0) {
+        echo "<small><em>*Harga setiap item di atas sudah otomatis dipotong diskon sebesar Rp " . number_format($diskon, 0, ',', '.') . "</em></small><br>";
+    }
+    echo "<strong>Total = " . number_to_currency($total, 'IDR') . "</strong>";
+    ?>
 </div>
 
 <button type="submit" class="btn btn-primary">Perbarui Keranjang</button>

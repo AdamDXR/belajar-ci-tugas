@@ -181,21 +181,20 @@ class TransaksiController extends BaseController
             'status'      => 0, 
         ];
 
-        // insert transaction
         if (!$this->transactionModel->insert($transaction)) {
             $db->transRollback();
             return redirect()->back()->with('error', 'Gagal membuat transaksi');
         }
 
         $transactionId = $this->transactionModel->getInsertID();
+        $diskonPerItem = session()->get('diskon') ?? 0;
 
-        // insert transaction detail
         foreach ($cartItems as $item) {
             $this->transactionDetailModel->insert([
                 'transaction_id' => $transactionId,
                 'product_id'     => $item['id'],
                 'jumlah'         => $item['qty'],
-                'diskon'         => 0,
+                'diskon'         => $diskonPerItem * $item['qty'],
                 'subtotal_harga' => $item['qty'] * $item['price'] 
             ]);
         }
@@ -206,7 +205,6 @@ class TransaksiController extends BaseController
             return redirect()->back()->with('error', 'Gagal membuat transaksi');
         }
 
-            //hapus session keranjang belanja 
         $this->cart->destroy();
         return redirect()->to(base_url());
     }
@@ -228,5 +226,43 @@ class TransaksiController extends BaseController
 
         return view('v_history', $data);
     }
+    
+    public function pembelian()
+    {
+        if (session()->get('role') != 'admin') {
+            return redirect()->to('/');
+        }
 
+        // Ambil SEMUA transaksi
+        $transactions = $this->transactionModel->findAll();
+        $transactionIds = array_column($transactions, 'id');
+
+        $products = [];
+        if (!empty($transactionIds)) {
+            $products = $this->transactionDetailModel->getProductsByTransactionIds($transactionIds);
+        }
+
+        $data = [
+            'username'      => '(Seluruh Pengguna)',
+            'transactions'  => $transactions,
+            'products'      => $products
+        ]; 
+        return view('v_history', $data);
+    }
+
+    public function ubah_status($id)
+    {
+        if (session()->get('role') != 'admin') {
+            return redirect()->to('/');
+        }
+
+        $trx = $this->transactionModel->find($id);
+        if ($trx) {
+            $statusBaru = ($trx['status'] == 0) ? 1 : 0;
+            $this->transactionModel->update($id, ['status' => $statusBaru]);
+            session()->setFlashdata('success', 'Status pesanan berhasil diubah.');
+        }
+
+        return redirect()->back();
+    }
 }

@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
-
 use App\Models\UserModel; 
 
 class AuthController extends BaseController
@@ -20,15 +19,28 @@ class AuthController extends BaseController
     {
         if ($this->request->getPost()) {
             $rules = [
-                'username' => 'required|min_length[6]',
+                // min_length diubah ke 5 agar kata 'admin' dan 'guest' bisa lolos validasi
+                'username' => 'required|min_length[5]',
                 'password' => 'required|min_length[7]|numeric',
             ];
+            
             if ($this->validate($rules)) {
                 $username = $this->request->getVar('username');
                 $password = $this->request->getVar('password');
 
-                $dataUser = $this->userModel ->where(['username' => $username])->first();
+                // --- TAMBAHAN UTS: PENGECEKAN USER STATIS ---
+                if ($username === 'admin' && $password === '1234567') {
+                    session()->set(['username' => 'Admin Statis', 'role' => 'admin', 'isLoggedIn' => TRUE]);
+                    return redirect()->to(base_url('/'));
+                }
+                if ($username === 'guest' && $password === '1234567') {
+                    session()->set(['username' => 'Guest Statis', 'role' => 'guest', 'isLoggedIn' => TRUE]);
+                    return redirect()->to(base_url('/'));
+                }
+                // --------------------------------------------
 
+                // Pengecekan Database (Untuk fitur UAS)
+                $dataUser = $this->userModel->where(['username' => $username])->first();
                 if ($dataUser) {
                     if (password_verify($password, $dataUser['password'])) {
                         session()->set([
@@ -36,7 +48,6 @@ class AuthController extends BaseController
                             'role' => $dataUser['role'],
                             'isLoggedIn' => TRUE
                         ]);
-
                         return redirect()->to(base_url('/'));
                     } else {
                         session()->setFlashdata('failed', 'Username & Password Salah');

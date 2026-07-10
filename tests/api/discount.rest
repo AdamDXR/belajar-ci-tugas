@@ -1,0 +1,27 @@
+### GET Semua Data Diskon
+GET http://localhost:8080/api/discounts
+Accept: application/json
+
+### GET Satu Data Diskon (Berdasarkan ID)
+GET http://localhost:8080/api/discounts/1
+Accept: application/json
+
+### CREATE Tambah Diskon Baru
+POST http://localhost:8080/api/discounts
+Content-Type: application/json
+
+{
+    "tanggal": "2026-08-17",
+    "nominal": "150000"
+}
+
+### UPDATE Ubah Nominal Diskon (ID 1)
+PUT http://localhost:8080/api/discounts/1
+Content-Type: application/json
+
+{
+    "nominal": "250000"
+}
+
+### DELETE Hapus Diskon (ID 1)
+DELETE http://localhost:8080/api/discounts/1

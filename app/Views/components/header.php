@@ -16,6 +16,14 @@
       </form>
     </div><!-- End Search Bar -->
 
+    <?php if (session()->get('diskon') > 0): ?>
+      <div class="d-flex align-items-center ms-3">
+          <span class="badge bg-success rounded-pill px-3 py-2" style="font-size: 14px;">
+              Hari ini ada diskon Rp <?php echo number_format(session()->get('diskon'), 0, ',', '.'); ?> per item
+          </span>
+      </div>
+    <?php endif; ?>
+
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
 

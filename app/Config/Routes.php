@@ -20,6 +20,13 @@ $routes->group('produk', ['filter' => 'auth'], function ($routes) {
     $routes->get('download', 'ProdukController::download');
 });
 
+$routes->group('diskon', ['filter' => 'auth'], function ($routes) {
+    $routes->get('', 'DiscountController::index');
+    $routes->post('', 'DiscountController::create');
+    $routes->post('edit/(:any)', 'DiscountController::edit/$1');
+    $routes->get('delete/(:any)', 'DiscountController::delete/$1');
+});
+
 $routes->group('keranjang', ['filter' => 'auth'], function ($routes) {
     $routes->get('', 'TransaksiController::index');
     $routes->post('', 'TransaksiController::cart_add');
@@ -32,9 +39,15 @@ $routes->get('checkout', 'TransaksiController::checkout', ['filter' => 'auth']);
 $routes->post('buy', 'TransaksiController::buy', ['filter' => 'auth']);
 $routes->get('history', 'TransaksiController::history', ['filter' => 'auth']);
 
+$routes->get('profile', 'Home::profile', ['filter' => 'role']);
+
 $routes->get('ajax/destinations','TransaksiController::destinations', ['filter' => 'auth']);
 $routes->get('ajax/costs','TransaksiController::costs', ['filter' => 'auth']);
 
 $routes->resource('api/products', ['controller' => 'Api\ProdukController']);
-
 $routes->get('api/transactions', 'Api\TransaksiController::index');
+
+$routes->resource('api/discounts', ['controller' => 'Api\DiscountController']);
+
+$routes->get('pembelian', 'TransaksiController::pembelian', ['filter' => 'auth']);
+$routes->get('transaksi/ubah_status/(:segment)', 'TransaksiController::ubah_status/$1', ['filter' => 'auth']);
